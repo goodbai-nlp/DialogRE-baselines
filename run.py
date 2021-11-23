@@ -31,16 +31,11 @@ import numpy as np
 import torch
 from torch.utils.data import TensorDataset, DataLoader, RandomSampler, SequentialSampler
 from torch.utils.data.distributed import DistributedSampler
+from transformers import AutoTokenizer
+from modeling_new import BertForSequenceClassificationEntityMax
+from modeling_roberta import RobertaForSequenceClassificationEntityMax
 
-import tokenization
-from modeling import (
-    BertConfig,
-    BertForSequenceClassificationEntityMax,
-    HierAMRBertForSequenceClassificationEntityMax,
-    DualAMRBertForSequenceClassificationEntityMax,
-)
 from optimization import BERTAdam
-from dataset_utils import load_vocab
 import json
 import re
 import time
@@ -210,12 +205,11 @@ def build_dataloader(args, datatype="train"):
     return data_set, data_loader
 
 
-
 def train(model, examples, dataloader, global_step, epoch):
     tr_loss = 0
     nb_tr_examples, nb_tr_steps = 0, 0
     for step, batch in enumerate(tqdm(dataloader, desc="Iteration {}".format(epoch))):
-        batch = tuple(t.to(device).unsqueeze(1) for t in batch)
+        batch = tuple(t.to(device) for t in batch)
         (
             input_ids,
             input_len,
@@ -225,15 +219,25 @@ def train(model, examples, dataloader, global_step, epoch):
             e2_mask,
             label_ids,
         ) = batch
+        if epoch == 1 and step == 0:
+            src_ids = input_ids.squeeze(1).tolist()
+            # print('Src_ids', input_ids.squeeze(1).size())
+            src_str = tokenizer.batch_decode(src_ids)
+            e1_ids = e1_mask.tolist()
+            e2_ids = e2_mask.tolist()
+            inp_mask = input_mask.tolist()
+            with open(args.output_dir+'/dummy.json', 'w', encoding='utf-8') as fout:
+                tmp={'src_ids':str(src_ids), 'src_str':src_str, 'attention_mask':str(inp_mask), 'e1_mask': str(e1_ids), 'e2_mask': str(e2_ids)}
+                json.dump(tmp, fout, indent=4)
 
         loss, _ = model(
-            input_ids,
-            segment_ids,
-            input_mask,
-            label_ids.float(),
-            1,
-            e1_mask,
-            e2_mask
+            input_ids=input_ids,
+            token_type_ids=segment_ids,
+            attention_mask=input_mask,
+            labels=label_ids.float(),
+            n_class=1,
+            b_mask=e1_mask,
+            c_mask=e2_mask
         )
         if n_gpu > 1:
             loss = loss.mean()
@@ -281,7 +285,7 @@ def evaluate(model, examples, dataloader, datatype='dev'):
     nb_eval_steps, nb_eval_examples = 0, 0
     logits_all = []
     for batch in dataloader:
-        batch = tuple(t.to(device).unsqueeze(1) for t in batch)
+        batch = tuple(t.to(device) for t in batch)
         (
             input_ids,
             input_len,
@@ -293,13 +297,13 @@ def evaluate(model, examples, dataloader, datatype='dev'):
         ) = batch
         with torch.no_grad():
             tmp_eval_loss, logits = model(
-                input_ids,
-                segment_ids,
-                input_mask,
-                label_ids.float(),
-                1,
-                e1_mask,
-                e2_mask
+                input_ids=input_ids,
+                token_type_ids=segment_ids,
+                attention_mask=input_mask,
+                labels=label_ids.float(),
+                n_class=1,
+                b_mask=e1_mask,
+                c_mask=e2_mask
             )
 
         logits = logits.detach().cpu().numpy()
@@ -330,7 +334,7 @@ args = parser.parse_args()
 
 logging.basicConfig(
     filename=args.output_dir + "/runing.log",
-    filemode="a",  ##模式，有w和a，w就是写模式，每次都会重新写日志，覆盖之前的日志
+    filemode="a",  #
     format="%(asctime)s - %(levelname)s - %(name)s -   %(message)s",
     datefmt="%m/%d/%Y %H:%M:%S",
     level=logging.INFO,
@@ -372,15 +376,6 @@ if n_gpu > 0:
 if not args.do_train and not args.do_eval:
     raise ValueError("At least one of `do_train` or `do_eval` must be True.")
 
-bert_config = BertConfig.from_json_file(args.bert_config_file)
-
-if args.max_seq_length > bert_config.max_position_embeddings:
-    raise ValueError(
-        "Cannot use sequence length {} because the BERT model was only trained up to sequence length {}".format(
-            args.max_seq_length, bert_config.max_position_embeddings
-        )
-    )
-
 if os.path.exists(args.output_dir) and "model.pt" in os.listdir(args.output_dir):
     if args.do_train and not args.resume:
         raise ValueError(
@@ -389,12 +384,6 @@ if os.path.exists(args.output_dir) and "model.pt" in os.listdir(args.output_dir)
 else:
     os.makedirs(args.output_dir, exist_ok=True)
 
-
-print("Loading vocabulary ...")
-
-# relations, relation2id = load_vocab(args.save_data + "/rel.vocab")
-# concepts, concept2id = load_vocab(args.save_data + "/con.vocab")
-# paths, path2id = load_vocab(args.save_data + "/path.vocab")
 
 train_examples = None
 num_train_steps = None
@@ -413,14 +402,33 @@ if args.do_train:
 assert args.architecture in ['STD'], 'Invalid model type : {}'.format(args.model_type)
 
 if args.architecture == 'STD':
-    model = BertForSequenceClassificationEntityMax(
-        bert_config, args, 1
-    )
+    if "roberta" in args.model_name_or_path:
+        model = RobertaForSequenceClassificationEntityMax.from_pretrained(
+            args.model_name_or_path,
+        )
+    elif "bert" in args.model_name_or_path:
+        model = BertForSequenceClassificationEntityMax.from_pretrained(
+            args.model_name_or_path,
+        )
+    else:
+        print(f"{args.model_name_or_path} is not supported, consider BERT or Roberta")
+
 else:
     print('Invalid Model Architecture!!!')
 
-if args.init_checkpoint is not None:
-    model.bert.load_state_dict(torch.load(args.init_checkpoint, map_location="cpu"))
+if "roberta" in args.model_name_or_path:
+    from transformers import RobertaTokenizer
+    tokenizer = RobertaTokenizer.from_pretrained(args.model_name_or_path)
+    tokenizer.add_special_tokens({"additional_special_tokens": ["madeupword0001", "madeupword0002"] })
+
+elif "bert" in args.model_name_or_path:
+    from transformers import BertTokenizer
+    tokenizer = BertTokenizer.from_pretrained(args.model_name_or_path)
+    tokenizer.add_special_tokens({"additional_special_tokens": ["[unused0]", "[unused10]", "[unused1]", "[unused2]", "[unused3]", "[unused4]", "[unused5]", "[unused6]", "[unused7]", "[unused8]", "[unused9]"] })
+else:
+    print(f"{args.model_name_or_path} is not supported, consider BERT or Roberta")
+
+model.resize_token_embeddings(len(tokenizer))
 
 if args.fp16:
     model.half()
@@ -560,4 +568,3 @@ if args.do_evalc:
     os.system(f'cat {args.output_dir}/logits_devc?.txt > {args.output_dir}/logits_devc.txt')
     export_predictions(args, 'testc')
     os.system(f'cat {args.output_dir}/logits_testc?.txt > {args.output_dir}/logits_devc.txt')
-

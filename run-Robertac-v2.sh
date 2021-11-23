@@ -1,7 +1,7 @@
-BERT_BASE_DIR=/public/home/zhangyuegroup/baixuefeng/data/pretrained-model/bert-base-uncased-wordpiece
+BERT_BASE_DIR=/public/home/zhangyuegroup/baixuefeng/data/pretrained-model/roberta-base
 
 model=STD
-dev=1
+dev=2
 mode=$2
 databin=$1
 seed=42
@@ -12,9 +12,9 @@ then
 echo "Start Training..."
 for seed in 42
 do
-save_path=workplace/bert_f1_max-512-${model}-seed-${seed}-$setting-baseline-debug-model-uncased-wordpiece
-save_path=workplace/bert_f1_max-512-${model}-seed-${seed}-$setting-baseline
-save_path=workplace/bert_f1_max-512-${model}-seed-${seed}-$setting-baseline-datanew
+
+save_path=workplace/Roberta_f1_max-512-${model}-seed-${seed}-$setting-baseline
+save_path=workplace/Roberta_f1_max-512-${model}-seed-${seed}-$setting-baseline-datanew
 
 mkdir -p $save_path
 CUDA_VISIBLE_DEVICES=$dev python run.py --task_name bert --do_train --do_eval \

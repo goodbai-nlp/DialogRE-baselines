@@ -1,11 +1,9 @@
 # coding:utf-8
 import os
 import torch
-import numpy as np
 import argparse
 from dataset import DialogREDataSet
-from dataset_utils import save_vocab, generate_vocab, tokenize
-from torch.utils import data
+from transformers import AutoTokenizer
 import time
 
 if __name__ == "__main__":
@@ -16,6 +14,7 @@ if __name__ == "__main__":
     argparser.add_argument("--devc_path", type=str, help="base dev data path")
     argparser.add_argument("--testc_path", type=str, help="base test data path")
     argparser.add_argument("--save_data", type=str, help="saved data path")
+    argparser.add_argument("--tokenizer", type=str, default="BERT", help="saved data path")
     FLAGS, unparsed = argparser.parse_known_args()
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -23,33 +22,42 @@ if __name__ == "__main__":
     if not os.path.exists(FLAGS.save_data):
         os.makedirs(FLAGS.save_data)
 
-    print('Building vocabularies ... ')
-    words, word2id = generate_vocab(FLAGS.train_path + '.src.tok', add_bos_eos=True)
-    print('Saving vocabularies ... ')
-    save_vocab(FLAGS.save_data + '/word.vocab', words)
+    if "roberta" in FLAGS.tokenizer:
+        from transformers import RobertaTokenizer
+        tokenizer = RobertaTokenizer.from_pretrained("roberta-base")
+        tokenizer.add_special_tokens({"additional_special_tokens": ["madeupword0001", "madeupword0002"] })
+    elif "bert" in FLAGS.tokenizer:
+        from transformers import BertTokenizer
+        tokenizer = BertTokenizer.from_pretrained("bert-base-uncased")
+        tokenizer.add_special_tokens({"additional_special_tokens": ["[unused0]", "[unused10]", "[unused1]", "[unused2]", "[unused3]", "[unused4]", "[unused5]", "[unused6]", "[unused7]", "[unused8]", "[unused9]"] })
 
-    tokenize_fn = tokenize
+    else:
+        print(f'Unsupported tokenizer {FLAGS.tokenizer}.')
+        exit()
+
+    tokenize_fn = tokenizer
     print("Loading train data ...")
     s_time = time.time()
-    train_set = DialogREDataSet(FLAGS.train_path, tokenize_fn, word_vocab=word2id, save_path=FLAGS.save_data+'/train', data_type='std')
+    train_set = DialogREDataSet(FLAGS.train_path, tokenize_fn, save_path=FLAGS.save_data+'/train', data_type='std')
     print("Loading trainset takes {:.3f}s".format(time.time() - s_time))
 
     print("Loading dev data ...")
     s_time = time.time()
-    dev_set = DialogREDataSet(FLAGS.dev_path, tokenize_fn, word_vocab=word2id, save_path=FLAGS.save_data+'/dev', data_type='std')
+    dev_set = DialogREDataSet(FLAGS.dev_path, tokenize_fn, save_path=FLAGS.save_data+'/dev', data_type='std')
     print("Loading devset takes {:.3f}s".format(time.time() - s_time))
 
     print("Loading test data ...")
     s_time = time.time()
-    test_set = DialogREDataSet(FLAGS.test_path, tokenize_fn, word_vocab=word2id, save_path=FLAGS.save_data+'/test', data_type='std')
+    test_set = DialogREDataSet(FLAGS.test_path, tokenize_fn, save_path=FLAGS.save_data+'/test', data_type='std')
     print("Loading testset takes {:.3f}s".format(time.time() - s_time))
 
-    print("Loading devc data ...")
-    s_time = time.time()
-    devc_set = DialogREDataSet(FLAGS.devc_path, tokenize_fn, word_vocab=word2id, save_path=FLAGS.save_data+'/devc', data_type='stdc')
-    print("Loading devcset takes {:.3f}s".format(time.time() - s_time))
+    ## TODO supply for conversational evaluate setting
+    # print("Loading devc data ...")
+    # s_time = time.time()
+    # devc_set = DialogREDataSet(FLAGS.devc_path, tokenize_fn, word_vocab=word2id, save_path=FLAGS.save_data+'/devc', data_type='stdc')
+    # print("Loading devcset takes {:.3f}s".format(time.time() - s_time))
 
-    print("Loading testc data ...")
-    s_time = time.time()
-    testc_set = DialogREDataSet(FLAGS.testc_path, tokenize_fn, word_vocab=word2id, save_path=FLAGS.save_data+'/testc', data_type='stdc')
-    print("Loading testcset takes {:.3f}s".format(time.time() - s_time))
+    # print("Loading testc data ...")
+    # s_time = time.time()
+    # testc_set = DialogREDataSet(FLAGS.testc_path, tokenize_fn, word_vocab=word2id, save_path=FLAGS.save_data+'/testc', data_type='stdc')
+    # print("Loading testcset takes {:.3f}s".format(time.time() - s_time))

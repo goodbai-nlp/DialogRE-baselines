@@ -4,22 +4,30 @@ import argparse
 def build_parser():
     parser = argparse.ArgumentParser()
     parser.add_argument(
-        "--bert_config_file",
+        "--model_name_or_path",
         default=None,
         type=str,
-        required=True,
+        required=False,
         help="The config json file corresponding to the pre-trained BERT model. \n"
         "This specifies the model architecture.",
     )
     parser.add_argument(
-        "--task_name", default=None, type=str, required=True, help="The name of the task to train."
+        "--bert_config_file",
+        default=None,
+        type=str,
+        required=False,
+        help="The config json file corresponding to the pre-trained BERT model. \n"
+        "This specifies the model architecture.",
     )
     parser.add_argument(
         "--vocab_file",
         default=None,
         type=str,
-        required=True,
+        required=False,
         help="The vocabulary file that the BERT model was trained on.",
+    )
+    parser.add_argument(
+        "--task_name", default=None, type=str, required=True, help="The name of the task to train."
     )
     parser.add_argument(
         "--architecture", default="Hier", type=str, required=True, help="The name of the model to train."

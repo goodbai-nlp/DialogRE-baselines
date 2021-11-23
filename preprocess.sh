@@ -1,6 +1,10 @@
-BASE=../data-v1
+BASE=data-v1
+BASE=data-v2
+tokenizer="bert"
+tokenizer="roberta"
 save_dir=workplace
-setting=data-bin-v1
+setting=$BASE-$tokenizer-bin
+setting=$BASE-$tokenizer-new-bin
 mkdir -p $save_dir
 python preprocess.py \
     --train_path $BASE/train \
@@ -8,4 +12,5 @@ python preprocess.py \
     --test_path $BASE/test \
     --devc_path $BASE/devc \
     --testc_path $BASE/testc \
+    --tokenizer $tokenizer \
     --save_data $save_dir/$setting

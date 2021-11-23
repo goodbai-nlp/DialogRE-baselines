@@ -1,0 +1,486 @@
+1,2c1,2
+< 11/22/2021 22:41:04 - INFO - __main__ -   device cuda n_gpu 1 distributed training False
+< 11/22/2021 22:41:08 - INFO - __main__ -   BertForSequenceClassificationEntityMax(
+---
+> 11/22/2021 22:07:12 - INFO - __main__ -   device cuda n_gpu 1 distributed training False
+> 11/22/2021 22:07:17 - INFO - __main__ -   BertForSequenceClassificationEntityMax(
+4,5c4,5
+<     (embeddings): BertEmbeddings(
+<       (word_embeddings): Embedding(30522, 768, padding_idx=0)
+---
+>     (embeddings): BERTEmbeddings(
+>       (word_embeddings): Embedding(30522, 768)
+8c8
+<       (LayerNorm): LayerNorm((768,), eps=1e-12, elementwise_affine=True)
+---
+>       (LayerNorm): BERTLayerNorm()
+11c11
+<     (encoder): BertEncoder(
+---
+>     (encoder): BERTEncoder(
+13,15c13,15
+<         (0): BertLayer(
+<           (attention): BertAttention(
+<             (self): BertSelfAttention(
+---
+>         (0): BERTLayer(
+>           (attention): BERTAttention(
+>             (self): BERTSelfAttention(
+21c21
+<             (output): BertSelfOutput(
+---
+>             (output): BERTSelfOutput(
+23c23
+<               (LayerNorm): LayerNorm((768,), eps=1e-12, elementwise_affine=True)
+---
+>               (LayerNorm): BERTLayerNorm()
+27c27
+<           (intermediate): BertIntermediate(
+---
+>           (intermediate): BERTIntermediate(
+30c30
+<           (output): BertOutput(
+---
+>           (output): BERTOutput(
+32c32
+<             (LayerNorm): LayerNorm((768,), eps=1e-12, elementwise_affine=True)
+---
+>             (LayerNorm): BERTLayerNorm()
+36,38c36,38
+<         (1): BertLayer(
+<           (attention): BertAttention(
+<             (self): BertSelfAttention(
+---
+>         (1): BERTLayer(
+>           (attention): BERTAttention(
+>             (self): BERTSelfAttention(
+44c44
+<             (output): BertSelfOutput(
+---
+>             (output): BERTSelfOutput(
+46c46
+<               (LayerNorm): LayerNorm((768,), eps=1e-12, elementwise_affine=True)
+---
+>               (LayerNorm): BERTLayerNorm()
+50c50
+<           (intermediate): BertIntermediate(
+---
+>           (intermediate): BERTIntermediate(
+53c53
+<           (output): BertOutput(
+---
+>           (output): BERTOutput(
+55c55
+<             (LayerNorm): LayerNorm((768,), eps=1e-12, elementwise_affine=True)
+---
+>             (LayerNorm): BERTLayerNorm()
+59,61c59,61
+<         (2): BertLayer(
+<           (attention): BertAttention(
+<             (self): BertSelfAttention(
+---
+>         (2): BERTLayer(
+>           (attention): BERTAttention(
+>             (self): BERTSelfAttention(
+67c67
+<             (output): BertSelfOutput(
+---
+>             (output): BERTSelfOutput(
+69c69
+<               (LayerNorm): LayerNorm((768,), eps=1e-12, elementwise_affine=True)
+---
+>               (LayerNorm): BERTLayerNorm()
+73c73
+<           (intermediate): BertIntermediate(
+---
+>           (intermediate): BERTIntermediate(
+76c76
+<           (output): BertOutput(
+---
+>           (output): BERTOutput(
+78c78
+<             (LayerNorm): LayerNorm((768,), eps=1e-12, elementwise_affine=True)
+---
+>             (LayerNorm): BERTLayerNorm()
+82,84c82,84
+<         (3): BertLayer(
+<           (attention): BertAttention(
+<             (self): BertSelfAttention(
+---
+>         (3): BERTLayer(
+>           (attention): BERTAttention(
+>             (self): BERTSelfAttention(
+90c90
+<             (output): BertSelfOutput(
+---
+>             (output): BERTSelfOutput(
+92c92
+<               (LayerNorm): LayerNorm((768,), eps=1e-12, elementwise_affine=True)
+---
+>               (LayerNorm): BERTLayerNorm()
+96c96
+<           (intermediate): BertIntermediate(
+---
+>           (intermediate): BERTIntermediate(
+99c99
+<           (output): BertOutput(
+---
+>           (output): BERTOutput(
+101c101
+<             (LayerNorm): LayerNorm((768,), eps=1e-12, elementwise_affine=True)
+---
+>             (LayerNorm): BERTLayerNorm()
+105,107c105,107
+<         (4): BertLayer(
+<           (attention): BertAttention(
+<             (self): BertSelfAttention(
+---
+>         (4): BERTLayer(
+>           (attention): BERTAttention(
+>             (self): BERTSelfAttention(
+113c113
+<             (output): BertSelfOutput(
+---
+>             (output): BERTSelfOutput(
+115c115
+<               (LayerNorm): LayerNorm((768,), eps=1e-12, elementwise_affine=True)
+---
+>               (LayerNorm): BERTLayerNorm()
+119c119
+<           (intermediate): BertIntermediate(
+---
+>           (intermediate): BERTIntermediate(
+122c122
+<           (output): BertOutput(
+---
+>           (output): BERTOutput(
+124c124
+<             (LayerNorm): LayerNorm((768,), eps=1e-12, elementwise_affine=True)
+---
+>             (LayerNorm): BERTLayerNorm()
+128,130c128,130
+<         (5): BertLayer(
+<           (attention): BertAttention(
+<             (self): BertSelfAttention(
+---
+>         (5): BERTLayer(
+>           (attention): BERTAttention(
+>             (self): BERTSelfAttention(
+136c136
+<             (output): BertSelfOutput(
+---
+>             (output): BERTSelfOutput(
+138c138
+<               (LayerNorm): LayerNorm((768,), eps=1e-12, elementwise_affine=True)
+---
+>               (LayerNorm): BERTLayerNorm()
+142c142
+<           (intermediate): BertIntermediate(
+---
+>           (intermediate): BERTIntermediate(
+145c145
+<           (output): BertOutput(
+---
+>           (output): BERTOutput(
+147c147
+<             (LayerNorm): LayerNorm((768,), eps=1e-12, elementwise_affine=True)
+---
+>             (LayerNorm): BERTLayerNorm()
+151,153c151,153
+<         (6): BertLayer(
+<           (attention): BertAttention(
+<             (self): BertSelfAttention(
+---
+>         (6): BERTLayer(
+>           (attention): BERTAttention(
+>             (self): BERTSelfAttention(
+159c159
+<             (output): BertSelfOutput(
+---
+>             (output): BERTSelfOutput(
+161c161
+<               (LayerNorm): LayerNorm((768,), eps=1e-12, elementwise_affine=True)
+---
+>               (LayerNorm): BERTLayerNorm()
+165c165
+<           (intermediate): BertIntermediate(
+---
+>           (intermediate): BERTIntermediate(
+168c168
+<           (output): BertOutput(
+---
+>           (output): BERTOutput(
+170c170
+<             (LayerNorm): LayerNorm((768,), eps=1e-12, elementwise_affine=True)
+---
+>             (LayerNorm): BERTLayerNorm()
+174,176c174,176
+<         (7): BertLayer(
+<           (attention): BertAttention(
+<             (self): BertSelfAttention(
+---
+>         (7): BERTLayer(
+>           (attention): BERTAttention(
+>             (self): BERTSelfAttention(
+182c182
+<             (output): BertSelfOutput(
+---
+>             (output): BERTSelfOutput(
+184c184
+<               (LayerNorm): LayerNorm((768,), eps=1e-12, elementwise_affine=True)
+---
+>               (LayerNorm): BERTLayerNorm()
+188c188
+<           (intermediate): BertIntermediate(
+---
+>           (intermediate): BERTIntermediate(
+191c191
+<           (output): BertOutput(
+---
+>           (output): BERTOutput(
+193c193
+<             (LayerNorm): LayerNorm((768,), eps=1e-12, elementwise_affine=True)
+---
+>             (LayerNorm): BERTLayerNorm()
+197,199c197,199
+<         (8): BertLayer(
+<           (attention): BertAttention(
+<             (self): BertSelfAttention(
+---
+>         (8): BERTLayer(
+>           (attention): BERTAttention(
+>             (self): BERTSelfAttention(
+205c205
+<             (output): BertSelfOutput(
+---
+>             (output): BERTSelfOutput(
+207c207
+<               (LayerNorm): LayerNorm((768,), eps=1e-12, elementwise_affine=True)
+---
+>               (LayerNorm): BERTLayerNorm()
+211c211
+<           (intermediate): BertIntermediate(
+---
+>           (intermediate): BERTIntermediate(
+214c214
+<           (output): BertOutput(
+---
+>           (output): BERTOutput(
+216c216
+<             (LayerNorm): LayerNorm((768,), eps=1e-12, elementwise_affine=True)
+---
+>             (LayerNorm): BERTLayerNorm()
+220,222c220,222
+<         (9): BertLayer(
+<           (attention): BertAttention(
+<             (self): BertSelfAttention(
+---
+>         (9): BERTLayer(
+>           (attention): BERTAttention(
+>             (self): BERTSelfAttention(
+228c228
+<             (output): BertSelfOutput(
+---
+>             (output): BERTSelfOutput(
+230c230
+<               (LayerNorm): LayerNorm((768,), eps=1e-12, elementwise_affine=True)
+---
+>               (LayerNorm): BERTLayerNorm()
+234c234
+<           (intermediate): BertIntermediate(
+---
+>           (intermediate): BERTIntermediate(
+237c237
+<           (output): BertOutput(
+---
+>           (output): BERTOutput(
+239c239
+<             (LayerNorm): LayerNorm((768,), eps=1e-12, elementwise_affine=True)
+---
+>             (LayerNorm): BERTLayerNorm()
+243,245c243,245
+<         (10): BertLayer(
+<           (attention): BertAttention(
+<             (self): BertSelfAttention(
+---
+>         (10): BERTLayer(
+>           (attention): BERTAttention(
+>             (self): BERTSelfAttention(
+251c251
+<             (output): BertSelfOutput(
+---
+>             (output): BERTSelfOutput(
+253c253
+<               (LayerNorm): LayerNorm((768,), eps=1e-12, elementwise_affine=True)
+---
+>               (LayerNorm): BERTLayerNorm()
+257c257
+<           (intermediate): BertIntermediate(
+---
+>           (intermediate): BERTIntermediate(
+260c260
+<           (output): BertOutput(
+---
+>           (output): BERTOutput(
+262c262
+<             (LayerNorm): LayerNorm((768,), eps=1e-12, elementwise_affine=True)
+---
+>             (LayerNorm): BERTLayerNorm()
+266,268c266,268
+<         (11): BertLayer(
+<           (attention): BertAttention(
+<             (self): BertSelfAttention(
+---
+>         (11): BERTLayer(
+>           (attention): BERTAttention(
+>             (self): BERTSelfAttention(
+274c274
+<             (output): BertSelfOutput(
+---
+>             (output): BERTSelfOutput(
+276c276
+<               (LayerNorm): LayerNorm((768,), eps=1e-12, elementwise_affine=True)
+---
+>               (LayerNorm): BERTLayerNorm()
+280c280
+<           (intermediate): BertIntermediate(
+---
+>           (intermediate): BERTIntermediate(
+283c283
+<           (output): BertOutput(
+---
+>           (output): BERTOutput(
+285c285
+<             (LayerNorm): LayerNorm((768,), eps=1e-12, elementwise_affine=True)
+---
+>             (LayerNorm): BERTLayerNorm()
+291c291
+<     (pooler): BertPooler(
+---
+>     (pooler): BERTPooler(
+297d296
+<   (classifier): Linear(in_features=2304, out_features=36, bias=True)
+298a298
+>   (classifier): Linear(in_features=2304, out_features=36, bias=True)
+300,315c300,403
+< 11/22/2021 22:41:08 - INFO - __main__ -   num. model params: 109565220 (num. trained: 109565220)
+< 11/22/2021 22:41:25 - INFO - __main__ -   ***** Running training *****
+< 11/22/2021 22:41:25 - INFO - __main__ -     Num examples = 5997
+< 11/22/2021 22:41:25 - INFO - __main__ -     Batch size = 12
+< 11/22/2021 22:41:25 - INFO - __main__ -     Num steps = 7496
+< 11/22/2021 22:44:41 - INFO - __main__ -   ***** Train results of epoch 1*****
+< 11/22/2021 22:44:41 - INFO - __main__ -     global_step = 250
+< 11/22/2021 22:44:41 - INFO - __main__ -     train_loss = 0.106810114890337
+< 11/22/2021 22:44:41 - INFO - __main__ -   ***** Running evaluation on dev set*****
+< 11/22/2021 22:44:41 - INFO - __main__ -     Num examples = 1914
+< 11/22/2021 22:44:41 - INFO - __main__ -     Batch size = 1
+< 11/22/2021 22:45:13 - INFO - __main__ -   ***** Valid results of epoch 1*****
+< 11/22/2021 22:45:13 - INFO - __main__ -     T2 = 0.19
+< 11/22/2021 22:45:13 - INFO - __main__ -     eval_acc = 0.9776065250202922
+< 11/22/2021 22:45:13 - INFO - __main__ -     eval_loss = 0.09126990897894341
+< 11/22/2021 22:45:13 - INFO - __main__ -     f1 = 0.29897567221510885
+---
+> 11/22/2021 22:07:17 - INFO - __main__ -   num. model params: 109565220 (num. trained: 109565220)
+> 11/22/2021 22:07:34 - INFO - __main__ -   ***** Running training *****
+> 11/22/2021 22:07:34 - INFO - __main__ -     Num examples = 5997
+> 11/22/2021 22:07:34 - INFO - __main__ -     Batch size = 12
+> 11/22/2021 22:07:34 - INFO - __main__ -     Num steps = 7496
+> 11/22/2021 22:11:19 - INFO - __main__ -   ***** Train results of epoch 1*****
+> 11/22/2021 22:11:19 - INFO - __main__ -     global_step = 250
+> 11/22/2021 22:11:19 - INFO - __main__ -     train_loss = 0.09431541550159454
+> 11/22/2021 22:11:19 - INFO - __main__ -   ***** Running evaluation on dev set*****
+> 11/22/2021 22:11:19 - INFO - __main__ -     Num examples = 1914
+> 11/22/2021 22:11:19 - INFO - __main__ -     Batch size = 1
+> 11/22/2021 22:11:54 - INFO - __main__ -   ***** Valid results of epoch 1*****
+> 11/22/2021 22:11:54 - INFO - __main__ -     T2 = 0.25
+> 11/22/2021 22:11:54 - INFO - __main__ -     eval_acc = 0.9778242192035038
+> 11/22/2021 22:11:54 - INFO - __main__ -     eval_loss = 0.08538731881548711
+> 11/22/2021 22:11:54 - INFO - __main__ -     f1 = 0.3188180404354588
+> 11/22/2021 22:15:40 - INFO - __main__ -   ***** Train results of epoch 2*****
+> 11/22/2021 22:15:40 - INFO - __main__ -     global_step = 250
+> 11/22/2021 22:15:40 - INFO - __main__ -     train_loss = 0.03910968368873
+> 11/22/2021 22:15:40 - INFO - __main__ -   ***** Running evaluation on dev set*****
+> 11/22/2021 22:15:40 - INFO - __main__ -     Num examples = 1914
+> 11/22/2021 22:15:40 - INFO - __main__ -     Batch size = 1
+> 11/22/2021 22:16:15 - INFO - __main__ -   ***** Valid results of epoch 2*****
+> 11/22/2021 22:16:15 - INFO - __main__ -     T2 = 0.25
+> 11/22/2021 22:16:15 - INFO - __main__ -     eval_acc = 0.9803784976198546
+> 11/22/2021 22:16:15 - INFO - __main__ -     eval_loss = 0.07284969043535498
+> 11/22/2021 22:16:15 - INFO - __main__ -     f1 = 0.4001421464108031
+> 11/22/2021 22:20:00 - INFO - __main__ -   ***** Train results of epoch 3*****
+> 11/22/2021 22:20:00 - INFO - __main__ -     global_step = 250
+> 11/22/2021 22:20:00 - INFO - __main__ -     train_loss = 0.03318886689841747
+> 11/22/2021 22:20:00 - INFO - __main__ -   ***** Running evaluation on dev set*****
+> 11/22/2021 22:20:00 - INFO - __main__ -     Num examples = 1914
+> 11/22/2021 22:20:00 - INFO - __main__ -     Batch size = 1
+> 11/22/2021 22:20:36 - INFO - __main__ -   ***** Valid results of epoch 3*****
+> 11/22/2021 22:20:36 - INFO - __main__ -     T2 = 0.22
+> 11/22/2021 22:20:36 - INFO - __main__ -     eval_acc = 0.9808283989318264
+> 11/22/2021 22:20:36 - INFO - __main__ -     eval_loss = 0.06655741272914606
+> 11/22/2021 22:20:36 - INFO - __main__ -     f1 = 0.4347545219638243
+> 11/22/2021 22:24:20 - INFO - __main__ -   ***** Train results of epoch 4*****
+> 11/22/2021 22:24:20 - INFO - __main__ -     global_step = 250
+> 11/22/2021 22:24:20 - INFO - __main__ -     train_loss = 0.02766678082384169
+> 11/22/2021 22:24:20 - INFO - __main__ -   ***** Running evaluation on dev set*****
+> 11/22/2021 22:24:20 - INFO - __main__ -     Num examples = 1914
+> 11/22/2021 22:24:20 - INFO - __main__ -     Batch size = 1
+> 11/22/2021 22:24:56 - INFO - __main__ -   ***** Valid results of epoch 4*****
+> 11/22/2021 22:24:56 - INFO - __main__ -     T2 = 0.24
+> 11/22/2021 22:24:56 - INFO - __main__ -     eval_acc = 0.9821345640310991
+> 11/22/2021 22:24:56 - INFO - __main__ -     eval_loss = 0.0549237544541544
+> 11/22/2021 22:24:56 - INFO - __main__ -     f1 = 0.5518806744487679
+> 11/22/2021 22:28:40 - INFO - __main__ -   ***** Train results of epoch 5*****
+> 11/22/2021 22:28:40 - INFO - __main__ -     global_step = 250
+> 11/22/2021 22:28:40 - INFO - __main__ -     train_loss = 0.02136084473039955
+> 11/22/2021 22:28:40 - INFO - __main__ -   ***** Running evaluation on dev set*****
+> 11/22/2021 22:28:40 - INFO - __main__ -     Num examples = 1914
+> 11/22/2021 22:28:40 - INFO - __main__ -     Batch size = 1
+> 11/22/2021 22:29:15 - INFO - __main__ -   ***** Valid results of epoch 5*****
+> 11/22/2021 22:29:15 - INFO - __main__ -     T2 = 0.37
+> 11/22/2021 22:29:15 - INFO - __main__ -     eval_acc = 0.9830633925461365
+> 11/22/2021 22:29:15 - INFO - __main__ -     eval_loss = 0.050116053222527275
+> 11/22/2021 22:29:15 - INFO - __main__ -     f1 = 0.6027035938015166
+> 11/22/2021 22:32:59 - INFO - __main__ -   ***** Train results of epoch 6*****
+> 11/22/2021 22:32:59 - INFO - __main__ -     global_step = 250
+> 11/22/2021 22:32:59 - INFO - __main__ -     train_loss = 0.0168558471580036
+> 11/22/2021 22:32:59 - INFO - __main__ -   ***** Running evaluation on dev set*****
+> 11/22/2021 22:32:59 - INFO - __main__ -     Num examples = 1914
+> 11/22/2021 22:32:59 - INFO - __main__ -     Batch size = 1
+> 11/22/2021 22:33:35 - INFO - __main__ -   ***** Valid results of epoch 6*****
+> 11/22/2021 22:33:35 - INFO - __main__ -     T2 = 0.2
+> 11/22/2021 22:33:35 - INFO - __main__ -     eval_acc = 0.9835278068036544
+> 11/22/2021 22:33:35 - INFO - __main__ -     eval_loss = 0.04810591899269711
+> 11/22/2021 22:33:35 - INFO - __main__ -     f1 = 0.6200308166409861
+> 11/22/2021 22:37:19 - INFO - __main__ -   ***** Train results of epoch 7*****
+> 11/22/2021 22:37:19 - INFO - __main__ -     global_step = 250
+> 11/22/2021 22:37:19 - INFO - __main__ -     train_loss = 0.01358431648951955
+> 11/22/2021 22:37:19 - INFO - __main__ -   ***** Running evaluation on dev set*****
+> 11/22/2021 22:37:19 - INFO - __main__ -     Num examples = 1914
+> 11/22/2021 22:37:19 - INFO - __main__ -     Batch size = 1
+> 11/22/2021 22:37:54 - INFO - __main__ -   ***** Valid results of epoch 7*****
+> 11/22/2021 22:37:54 - INFO - __main__ -     T2 = 0.31
+> 11/22/2021 22:37:54 - INFO - __main__ -     eval_acc = 0.9836874492046775
+> 11/22/2021 22:37:54 - INFO - __main__ -     eval_loss = 0.046854336758901084
+> 11/22/2021 22:37:54 - INFO - __main__ -     f1 = 0.6462668298653611
+> 11/22/2021 22:41:38 - INFO - __main__ -   ***** Train results of epoch 8*****
+> 11/22/2021 22:41:38 - INFO - __main__ -     global_step = 250
+> 11/22/2021 22:41:38 - INFO - __main__ -     train_loss = 0.01135635633720085
+> 11/22/2021 22:41:38 - INFO - __main__ -   ***** Running evaluation on dev set*****
+> 11/22/2021 22:41:38 - INFO - __main__ -     Num examples = 1914
+> 11/22/2021 22:41:38 - INFO - __main__ -     Batch size = 1
+> 11/22/2021 22:42:14 - INFO - __main__ -   ***** Valid results of epoch 8*****
+> 11/22/2021 22:42:14 - INFO - __main__ -     T2 = 0.37
+> 11/22/2021 22:42:14 - INFO - __main__ -     eval_acc = 0.9838616045512472
+> 11/22/2021 22:42:14 - INFO - __main__ -     eval_loss = 0.04783232956249771
+> 11/22/2021 22:42:14 - INFO - __main__ -     f1 = 0.6463878326996199
+> 11/22/2021 22:45:58 - INFO - __main__ -   ***** Train results of epoch 9*****
+> 11/22/2021 22:45:58 - INFO - __main__ -     global_step = 250
+> 11/22/2021 22:45:58 - INFO - __main__ -     train_loss = 0.009540860250242986
+> 11/22/2021 22:45:58 - INFO - __main__ -   ***** Running evaluation on dev set*****
+> 11/22/2021 22:45:58 - INFO - __main__ -     Num examples = 1914
+> 11/22/2021 22:45:58 - INFO - __main__ -     Batch size = 1
+> 11/22/2021 22:46:34 - INFO - __main__ -   ***** Valid results of epoch 9*****
+> 11/22/2021 22:46:34 - INFO - __main__ -     T2 = 0.29
+> 11/22/2021 22:46:34 - INFO - __main__ -     eval_acc = 0.9844566353186928
+> 11/22/2021 22:46:34 - INFO - __main__ -     eval_loss = 0.04782438260041041
+> 11/22/2021 22:46:34 - INFO - __main__ -     f1 = 0.6638194020744357
