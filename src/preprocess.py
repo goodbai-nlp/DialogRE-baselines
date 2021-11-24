@@ -14,7 +14,7 @@ if __name__ == "__main__":
     argparser.add_argument("--devc_path", type=str, help="base dev data path")
     argparser.add_argument("--testc_path", type=str, help="base test data path")
     argparser.add_argument("--save_data", type=str, help="saved data path")
-    argparser.add_argument("--tokenizer", type=str, default="BERT", help="saved data path")
+    argparser.add_argument("--tokenizer_name_or_path", type=str, default="bert-base-uncased", help="saved data path")
     FLAGS, unparsed = argparser.parse_known_args()
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -22,14 +22,16 @@ if __name__ == "__main__":
     if not os.path.exists(FLAGS.save_data):
         os.makedirs(FLAGS.save_data)
 
-    if "roberta" in FLAGS.tokenizer:
+    if "roberta" in FLAGS.tokenizer_name_or_path:
         from transformers import RobertaTokenizer
-        tokenizer = RobertaTokenizer.from_pretrained("roberta-base")
-        tokenizer.add_special_tokens({"additional_special_tokens": ["madeupword0001", "madeupword0002"] })
-    elif "bert" in FLAGS.tokenizer:
+        tokenizer = RobertaTokenizer.from_pretrained(FLAGS.tokenizer_name_or_path)
+        tokenizer.add_special_tokens({"additional_special_tokens": ["madeupword0001", "madeupword0002"]})
+        # tokenizer.add_special_tokens({"additional_special_tokens": ["madeupword0000", "madeupword0010","madeupword0001", "madeupword0002", "madeupword0003","madeupword0004", "madeupword0005","madeupword0006","madeupword0007","madeupword0008","madeupword0009"] })
+    elif "bert" in FLAGS.tokenizer_name_or_path:
         from transformers import BertTokenizer
-        tokenizer = BertTokenizer.from_pretrained("bert-base-uncased")
-        tokenizer.add_special_tokens({"additional_special_tokens": ["[unused0]", "[unused10]", "[unused1]", "[unused2]", "[unused3]", "[unused4]", "[unused5]", "[unused6]", "[unused7]", "[unused8]", "[unused9]"] })
+        tokenizer = BertTokenizer.from_pretrained(FLAGS.tokenizer_name_or_path)
+        tokenizer.add_special_tokens({"additional_special_tokens": ["[unused1]", "[unused2]"]})
+        # tokenizer.add_special_tokens({"additional_special_tokens": ["[unused0]", "[unused10]", "[unused1]", "[unused2]", "[unused3]", "[unused4]", "[unused5]", "[unused6]", "[unused7]", "[unused8]", "[unused9]"] })
 
     else:
         print(f'Unsupported tokenizer {FLAGS.tokenizer}.')

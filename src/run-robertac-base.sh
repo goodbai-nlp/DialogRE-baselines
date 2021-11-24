@@ -1,27 +1,26 @@
 BERT_BASE_DIR=/public/home/zhangyuegroup/baixuefeng/data/pretrained-model/roberta-base
 
 model=STD
-dev=2
+dev=1
 mode=$2
 databin=$1
+datacate=v2
 seed=42
-setting=v2-old
-setting=v2
 if [ "$mode" == "train" ]
 then
 echo "Start Training..."
 for seed in 42
 do
 
-save_path=workplace/Roberta_f1_max-512-${model}-seed-${seed}-$setting-baseline
-save_path=workplace/Roberta_f1_max-512-${model}-seed-${seed}-$setting-baseline-datanew
+save_path=workplace/output/roberta-base-512-seed-${seed}-$datacate-baseline-datanew-lr3e-5
 
 mkdir -p $save_path
-CUDA_VISIBLE_DEVICES=$dev python run.py --task_name bert --do_train --do_eval \
+CUDA_VISIBLE_DEVICES=$dev python run.py --do_train --do_eval \
 	--architecture $model \
 	--seed $seed \
 	--model_name_or_path $BERT_BASE_DIR \
 	--max_seq_length 512   \
+	--num_labels 36 \
 	--train_batch_size 24   \
 	--eval_batch_size 1   \
 	--learning_rate 3e-5   \
@@ -35,6 +34,7 @@ done
 elif [ "$mode" == "test" ]
 then
 echo "Start Testing..."
+save_path=workplace/output/roberta-base-512-seed-${seed}-$datacate-baseline-datanew-lr3e-5
 CUDA_VISIBLE_DEVICES=$dev python run.py --task_name bert --do_eval \
 	--architecture $model \
 	--seed $seed \
@@ -52,3 +52,4 @@ CUDA_VISIBLE_DEVICES=$dev python run.py --task_name bert --do_eval \
 else
 	echo "Invalid mode $mode!!!"
 fi
+

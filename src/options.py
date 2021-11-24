@@ -27,9 +27,6 @@ def build_parser():
         help="The vocabulary file that the BERT model was trained on.",
     )
     parser.add_argument(
-        "--task_name", default=None, type=str, required=True, help="The name of the task to train."
-    )
-    parser.add_argument(
         "--architecture", default="Hier", type=str, required=True, help="The name of the model to train."
     )
     parser.add_argument(
@@ -151,14 +148,8 @@ def build_parser():
     parser.add_argument(
         "--save_data", default='workplace/data-bin', type=str, help="entity dropout during training.",
     )
-    parser.add_argument("--d_concept", type=int, default=768, help="dimension of graph layer")
-    parser.add_argument("--d_relation", type=int, default=64, help="dimension of relation embedding")
-    parser.add_argument("--g_num_layer", type=int, default=2, help="number of graph layers")
+    parser.add_argument("--num_labels", type=int, default=36, help="number of classification labels")
     parser.add_argument(
-        "--g_pe",
-        default=False,
-        action="store_true",
-        help="Whether to use position embedding for graph encoder.",
+        "--shuffle", default=False, action="store_true", help="Whether to run training."
     )
-    parser.add_argument("--g_d_ff", type=int, default=1024, help="dimension of graph ff layer") 
     return parser

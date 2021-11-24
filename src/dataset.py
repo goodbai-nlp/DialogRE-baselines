@@ -1,6 +1,7 @@
 # coding:utf-8
 import math
 import json
+from typing import Pattern
 from tqdm import tqdm
 import pickle
 import numpy as np
@@ -56,8 +57,10 @@ def replace_speaker(s, e1="", e2="", tokenizer=None):
     res = []
     if "roberta" in tokenizer.name_or_path:
         unused_tokens = ["madeupword0001", "madeupword0002"]
+        roberta_tok = True
     elif "bert" in tokenizer.name_or_path:
-        unused_tokens = ["[unused1]", "[unused10]"]
+        unused_tokens = ["[unused1]", "[unused2]"]
+        roberta_tok = False
     for itm in s.split(): 
         if itm.startswith("speaker") and itm[7:].isdigit():
             if itm == e1:                       # replace speaker information
@@ -65,7 +68,7 @@ def replace_speaker(s, e1="", e2="", tokenizer=None):
             elif itm == e2:
                 new_itm = unused_tokens[1]
             else:
-                # new_itm = "[unused{}]".format(itm[7:])
+                # new_itm = f"madeupword000{itm[7:]}" if roberta_tok else f"[unused{itm[7:]}]"
                 new_itm = itm
             res.append(new_itm)
         else:
@@ -88,7 +91,7 @@ def convert_input(src, e1, e2, max_seq_length=512, max_d_len=491, tokenizer=None
 
     _truncate_seq_tuple(tokens_a, _tokens_b, _tokens_c, max_seq_length - 6)
     tokens_b = _tokens_b + [tokenizer.sep_token] + _tokens_c
-
+    next_seg_id = 0 if "roberta" in tokenizer.name_or_path else 1
     tokens = []
     segment_ids = []
     tokens.append(tokenizer.cls_token)
@@ -102,9 +105,9 @@ def convert_input(src, e1, e2, max_seq_length=512, max_d_len=491, tokenizer=None
 
     for token in tokens_b:              
         tokens.append(token)
-        segment_ids.append(1)               # set seg_id = 1 for entities
+        segment_ids.append(next_seg_id)               # set seg_id = 1 for entities
     tokens.append(tokenizer.sep_token)
-    segment_ids.append(1)
+    segment_ids.append(next_seg_id)   
 
     input_ids = tokenizer.convert_tokens_to_ids(tokens)
     assert len(input_ids) <= max_seq_length, "Invalid instance {}, length: {}".format(' '.join(tokens), len(input_ids))
@@ -138,7 +141,8 @@ def convert_input(src, e1, e2, max_seq_length=512, max_d_len=491, tokenizer=None
     assert len(segment_ids) == max_seq_length
     assert len(mask_b) == max_seq_length
     assert len(mask_c) == max_seq_length
-    
+    if "roberta" in tokenizer.name_or_path:
+        assert sum(segment_ids) == 0, f"the segment ids for roberta should be 0 instead of {sum(segment_ids)}"
     return input_ids, input_len, input_mask, segment_ids, mask_b, mask_c
 
 

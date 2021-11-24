@@ -1,30 +1,32 @@
-BERT_BASE_DIR=/public/home/zhangyuegroup/baixuefeng/data/pretrained-model/bert-base-uncased-wordpiece
+BERT_BASE_DIR=/public/home/zhangyuegroup/baixuefeng/data/pretrained-model/roberta-large
 
 model=STD
 dev=1
 mode=$2
 databin=$1
 seed=42
-setting=v2-old
-setting=v2
+datacate=v2
 if [ "$mode" == "train" ]
 then
 echo "Start Training..."
 for seed in 42
 do
-save_path=workplace/bert_f1_max-512-${model}-seed-${seed}-$setting-baseline-debug-model-uncased-wordpiece
-save_path=workplace/bert_f1_max-512-${model}-seed-${seed}-$setting-baseline
-save_path=workplace/bert_f1_max-512-${model}-seed-${seed}-$setting-baseline-datanew
+
+save_path=workplace/roberta-large-512-${model}-seed-${seed}-$datacate-baseline
+save_path=workplace/roberta-large-512-seed-${seed}-$setting-bsz12-lr5e-6
+save_path=workplace/output/roberta-large-512-seed-${seed}-$datacate-bsz12-lr5e-6-datanew
+save_path=workplace/output/roberta-large-512-seed-${seed}-$datacate-bsz24-lr1e-5-datanew
 
 mkdir -p $save_path
-CUDA_VISIBLE_DEVICES=$dev python run.py --task_name bert --do_train --do_eval \
+CUDA_VISIBLE_DEVICES=$dev python run.py --do_train --do_eval \
 	--architecture $model \
 	--seed $seed \
 	--model_name_or_path $BERT_BASE_DIR \
 	--max_seq_length 512   \
+	--num_labels 36 \
 	--train_batch_size 24   \
 	--eval_batch_size 1   \
-	--learning_rate 3e-5   \
+	--learning_rate 1e-5   \
 	--num_train_epochs 30   \
 	--output_dir $save_path  \
 	--model_type "entity-max" \
@@ -35,6 +37,7 @@ done
 elif [ "$mode" == "test" ]
 then
 echo "Start Testing..."
+save_path=workplace/output/roberta-large-512-seed-${seed}-$datacate-bsz24-lr1e-5-datanew
 CUDA_VISIBLE_DEVICES=$dev python run.py --task_name bert --do_eval \
 	--architecture $model \
 	--seed $seed \

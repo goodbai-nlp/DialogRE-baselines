@@ -32,9 +32,8 @@ import torch
 from torch.utils.data import TensorDataset, DataLoader, RandomSampler, SequentialSampler
 from torch.utils.data.distributed import DistributedSampler
 from transformers import AutoTokenizer
-from modeling_new import BertForSequenceClassificationEntityMax
-from modeling_roberta import RobertaForSequenceClassificationEntityMax
-
+from modeling import BertForSequenceClassificationEntityMax, RobertaForSequenceClassificationEntityMax
+from transformers import BertConfig, RobertaConfig
 from optimization import BERTAdam
 import json
 import re
@@ -154,6 +153,20 @@ def f1_eval(logits, examples):
     return bestf_1, bestT2
 
 
+def datset_collate_fn(samples, device=torch.device("cpu")):
+    # print('Samples:', len(samples), samples)
+    # exit()
+    input_ids = torch.stack([itm[0] for itm in samples], dim=0)
+    input_lens = torch.stack([itm[1] for itm in samples], dim=0)
+    input_mask = torch.stack([itm[2] for itm in samples], dim=0)
+    segment_ids = torch.stack([itm[3] for itm in samples], dim=0)
+    e1_mask = torch.stack([itm[4] for itm in samples], dim=0)
+    e2_mask = torch.stack([itm[5] for itm in samples], dim=0)
+    label_ids = torch.stack([itm[6] for itm in samples], dim=0)
+    keep_column_mask = input_ids.ne(tokenizer.pad_token_id).any(dim=0)
+    # print('inp_ids', input_ids[:, keep_column_mask].size())
+    return (input_ids[:, keep_column_mask], input_lens, input_mask[:, keep_column_mask], segment_ids[:, keep_column_mask], e1_mask[:, keep_column_mask], e2_mask[:, keep_column_mask], label_ids)
+
 def get_dataloader(data_set, args, batch_size, datatype="train"):
     tensor_word_inp = torch.tensor(data_set[0], dtype=torch.long)
     tensor_context_len = torch.tensor(data_set[1], dtype=torch.long)
@@ -172,12 +185,14 @@ def get_dataloader(data_set, args, batch_size, datatype="train"):
         tensor_e2_mask,
         tensor_rid,
     )
-    if args.local_rank == -1:
-        sampler = SequentialSampler(data)
+    # if args.local_rank == -1:
+    #     sampler = SequentialSampler(data)
+    # else:
+    #     sampler = DistributedSampler(data)
+    if datatype == "train" and args.shuffle:
+        dataloader = DataLoader(data, batch_size=batch_size, shuffle=True, collate_fn=datset_collate_fn)
     else:
-        sampler = DistributedSampler(data)
-
-    dataloader = DataLoader(data, sampler=sampler, batch_size=batch_size)
+        dataloader = DataLoader(data, batch_size=batch_size, shuffle=False, collate_fn=datset_collate_fn)
     return dataloader
 
 
@@ -208,7 +223,8 @@ def build_dataloader(args, datatype="train"):
 def train(model, examples, dataloader, global_step, epoch):
     tr_loss = 0
     nb_tr_examples, nb_tr_steps = 0, 0
-    for step, batch in enumerate(tqdm(dataloader, desc="Iteration {}".format(epoch))):
+    epoch_iterator = tqdm(dataloader, desc="Iteration {}".format(epoch))
+    for step, batch in enumerate(epoch_iterator):
         batch = tuple(t.to(device) for t in batch)
         (
             input_ids,
@@ -235,7 +251,6 @@ def train(model, examples, dataloader, global_step, epoch):
             token_type_ids=segment_ids,
             attention_mask=input_mask,
             labels=label_ids.float(),
-            n_class=1,
             b_mask=e1_mask,
             c_mask=e2_mask
         )
@@ -247,6 +262,7 @@ def train(model, examples, dataloader, global_step, epoch):
             loss = loss * args.loss_scale
         if args.gradient_accumulation_steps > 1:
             loss = loss / args.gradient_accumulation_steps
+        epoch_iterator.set_postfix(loss=loss.item(), lr=optimizer.get_lr()[0])
         loss.backward()
         tr_loss += loss.item()
         nb_tr_examples += input_ids.size(0)
@@ -301,7 +317,6 @@ def evaluate(model, examples, dataloader, datatype='dev'):
                 token_type_ids=segment_ids,
                 attention_mask=input_mask,
                 labels=label_ids.float(),
-                n_class=1,
                 b_mask=e1_mask,
                 c_mask=e2_mask
             )
@@ -403,12 +418,18 @@ assert args.architecture in ['STD'], 'Invalid model type : {}'.format(args.model
 
 if args.architecture == 'STD':
     if "roberta" in args.model_name_or_path:
+        config = RobertaConfig.from_pretrained(args.model_name_or_path)
+        config.num_labels = args.num_labels
         model = RobertaForSequenceClassificationEntityMax.from_pretrained(
             args.model_name_or_path,
+            config=config,
         )
     elif "bert" in args.model_name_or_path:
+        config = BertConfig.from_pretrained(args.model_name_or_path)
+        config.num_labels = args.num_labels
         model = BertForSequenceClassificationEntityMax.from_pretrained(
             args.model_name_or_path,
+            config=config,
         )
     else:
         print(f"{args.model_name_or_path} is not supported, consider BERT or Roberta")
@@ -419,12 +440,12 @@ else:
 if "roberta" in args.model_name_or_path:
     from transformers import RobertaTokenizer
     tokenizer = RobertaTokenizer.from_pretrained(args.model_name_or_path)
-    tokenizer.add_special_tokens({"additional_special_tokens": ["madeupword0001", "madeupword0002"] })
+    tokenizer.add_special_tokens({"additional_special_tokens": ["madeupword0001", "madeupword0002"]})
 
 elif "bert" in args.model_name_or_path:
     from transformers import BertTokenizer
     tokenizer = BertTokenizer.from_pretrained(args.model_name_or_path)
-    tokenizer.add_special_tokens({"additional_special_tokens": ["[unused0]", "[unused10]", "[unused1]", "[unused2]", "[unused3]", "[unused4]", "[unused5]", "[unused6]", "[unused7]", "[unused8]", "[unused9]"] })
+    tokenizer.add_special_tokens({"additional_special_tokens": ["[unused1]", "[unused2]"] })
 else:
     print(f"{args.model_name_or_path} is not supported, consider BERT or Roberta")
 
@@ -535,6 +556,7 @@ if args.do_train:
     model.load_state_dict(torch.load(os.path.join(args.output_dir, "model_best.pt")))
     torch.save(model.state_dict(), os.path.join(args.output_dir, "model.pt"))
 
+print(f"Loading trained weights from {os.path.join(args.output_dir, 'model.pt')}...")
 model.load_state_dict(torch.load(os.path.join(args.output_dir, "model.pt")))
 model.eval()
 
@@ -560,11 +582,15 @@ def export_predictions(args, data_type='dev', examples=None, dataloader=None):
                     f.write(" ")
 
 if args.do_eval:
+    print('Evaluating on dev set...')
     export_predictions(args, 'dev', examples=dev_examples, dataloader=dev_dataloader)
+    print('Evaluating on test set...')
     export_predictions(args, 'test', examples=test_examples, dataloader=test_dataloader)
 
 if args.do_evalc:
+    print('Evaluating on devc set...')
     export_predictions(args, 'devc')
     os.system(f'cat {args.output_dir}/logits_devc?.txt > {args.output_dir}/logits_devc.txt')
+    print('Evaluating on testc set...')
     export_predictions(args, 'testc')
     os.system(f'cat {args.output_dir}/logits_testc?.txt > {args.output_dir}/logits_devc.txt')
