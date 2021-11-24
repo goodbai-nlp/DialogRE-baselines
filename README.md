@@ -17,7 +17,10 @@ bash /path/to/code/preprocess.sh /path/to/bert-base-uncased
 bash /path/to/code/preprocess.sh /path/to/roberta-base
 ```
 It should be noted that we use the BERT model [here](https://storage.googleapis.com/bert_models/2020_02_20/uncased_L-12_H-768_A-12.zip), which is different from the `bert-base-uncased` model provided by Huggingface.
-
+The BERT model can be obtained by running:
+```
+bash convert.sh
+```
 # Training
 ```
 bash run-bertc-base.sh workplace/data-v2-bert-bin/ train          # BERT base model
