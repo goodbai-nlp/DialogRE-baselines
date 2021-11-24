@@ -1,5 +1,5 @@
 # DialogRE-baselines
-Simple yet strong baselines for dialogue relation extraction task.
+This repository contains several simple yet strong baselines for dialogue relation extraction task.
 The models are implemented based on the baseline model of paper "Semantic Representation for Dialogue Modeling".
 You may find the paper [here](https://arxiv.org/pdf/2105.10188).
 
