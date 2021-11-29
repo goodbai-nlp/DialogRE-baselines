@@ -13,8 +13,8 @@ You may find the paper [here](https://arxiv.org/pdf/2105.10188).
 # Preprocessing
 Preprocess the data using BERT or Roberta tokenizer.
 ```
-bash /path/to/code/preprocess.sh /path/to/bert-base-uncased
-bash /path/to/code/preprocess.sh /path/to/roberta-base
+bash /path/to/code/preprocess.sh bert-base-uncased
+bash /path/to/code/preprocess.sh roberta-base
 ```
 It should be noted that we use the BERT model [here](https://storage.googleapis.com/bert_models/2020_02_20/uncased_L-12_H-768_A-12.zip), which is different from the `bert-base-uncased` model provided by Huggingface.
 The BERT model can be obtained by running:
@@ -34,9 +34,15 @@ bash run-bertc-base.sh workplace/data-v2-bert-bin/ test
 bash eval.sh  /path/to/save_path/
 ```
 
-# Pretrained Models
+# Results and Pretrained Models
 
-## Todo
+### Data-v2
+
+|Setting|  dev-F1  | test-F1 | checkpoint |
+|  :----:  | :---:|  :----:  | :----:  |
+| `BERT-base-uncased`  | 67.1 | 66.2 | [model](https://1drv.ms/u/s!ArC7JSpdBblgmzAdphYs1uTHNS6U?e=eagT9A) |
+| `Roberta-base`  | 68.3 | 66.6 | [model](https://1drv.ms/u/s!ArC7JSpdBblgmz650xDsNEOTf2RQ?e=ryBSDW) |
+| `Roberta-large`  | 75.4 | 75.7 | [model](https://1drv.ms/u/s!ArC7JSpdBblgmz-wcgS-OO5T1Ftw?e=hLvAJ7) |
 
 
 # Reference
