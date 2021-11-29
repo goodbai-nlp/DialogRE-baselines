@@ -1,19 +1,17 @@
 BERT_BASE_DIR=/public/home/zhangyuegroup/baixuefeng/data/pretrained-model/bert-base-uncased-wordpiece
 
 model=STD
-dev=0
+dev=1
 mode=$2
 databin=$1
-seed=42
+seed=3
 datacate=v2
 
 if [ "$mode" == "train" ]
 then
 echo "Start Training..."
-for seed in 42
-do
-save_path=workplace/output/bert-base-512-seed-${seed}-$datacate-baseline-datanew
-
+save_path=workplace/output/bert-base-512-seed-${seed}-$datacate-baseline
+echo $seed
 mkdir -p $save_path
 CUDA_VISIBLE_DEVICES=$dev python run.py --do_train --do_eval \
 	--architecture $model \
@@ -30,11 +28,10 @@ CUDA_VISIBLE_DEVICES=$dev python run.py --do_train --do_eval \
 	--entity_drop 0.1 \
 	--save_data $databin \
 	--gradient_accumulation_steps 2 2>&1 | tee $save_path/run.log
-done
 elif [ "$mode" == "test" ]
 then
 echo "Start Testing..."
-save_path=workplace/output/bert-base-512-seed-${seed}-$datacate-baseline-datanew
+save_path=workplace/output/bert-base-512-seed-${seed}-$datacate-baseline
 CUDA_VISIBLE_DEVICES=$dev python run.py --do_eval \
 	--architecture $model \
 	--seed $seed \

@@ -1,7 +1,7 @@
 BERT_BASE_DIR=/public/home/zhangyuegroup/baixuefeng/data/pretrained-model/roberta-large
 
 model=STD
-dev=1
+dev=2
 mode=$2
 databin=$1
 seed=42
@@ -9,13 +9,8 @@ datacate=v2
 if [ "$mode" == "train" ]
 then
 echo "Start Training..."
-for seed in 42
-do
-
-save_path=workplace/roberta-large-512-${model}-seed-${seed}-$datacate-baseline
-save_path=workplace/roberta-large-512-seed-${seed}-$setting-bsz12-lr5e-6
-save_path=workplace/output/roberta-large-512-seed-${seed}-$datacate-bsz12-lr5e-6-datanew
-save_path=workplace/output/roberta-large-512-seed-${seed}-$datacate-bsz24-lr1e-5-datanew
+echo $seed
+save_path=workplace/output/roberta-large-512-seed-${seed}-$datacate-baseline
 
 mkdir -p $save_path
 CUDA_VISIBLE_DEVICES=$dev python run.py --do_train --do_eval \
@@ -33,11 +28,10 @@ CUDA_VISIBLE_DEVICES=$dev python run.py --do_train --do_eval \
 	--entity_drop 0.1 \
 	--save_data $databin \
 	--gradient_accumulation_steps 2 2>&1 | tee $save_path/run.log
-done
 elif [ "$mode" == "test" ]
 then
 echo "Start Testing..."
-save_path=workplace/output/roberta-large-512-seed-${seed}-$datacate-bsz24-lr1e-5-datanew
+save_path=workplace/output/roberta-large-512-seed-${seed}-$datacate-baseline
 CUDA_VISIBLE_DEVICES=$dev python run.py --task_name bert --do_eval \
 	--architecture $model \
 	--seed $seed \
