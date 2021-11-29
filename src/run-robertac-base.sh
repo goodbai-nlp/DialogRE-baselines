@@ -1,7 +1,7 @@
 BERT_BASE_DIR=/public/home/zhangyuegroup/baixuefeng/data/pretrained-model/roberta-base
 
 model=STD
-dev=3
+dev=1
 mode=$2
 databin=$1
 datacate=v2
@@ -31,7 +31,7 @@ elif [ "$mode" == "test" ]
 then
 echo "Start Testing..."
 save_path=workplace/output/roberta-base-512-seed-${seed}-$datacate-baseline
-CUDA_VISIBLE_DEVICES=$dev python run.py --task_name bert --do_eval \
+CUDA_VISIBLE_DEVICES=$dev python run.py --do_eval \
 	--architecture $model \
 	--seed $seed \
 	--model_name_or_path $BERT_BASE_DIR \
